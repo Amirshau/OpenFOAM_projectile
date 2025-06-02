@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2206                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     rhoCentralFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         4;
+
+deltaT          0.001;
+
+writeControl    runTime;
+
+writeInterval   0.01;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.5;
+
+maxDeltaT       1e-04;
+
+// Drag calculation
+functions
+{
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        functionObjectLibs ("libforces.so");
+        patches         (wall);            // <-- use actual projectile surface patch name
+        rho             rhoInf;
+        rhoInf          1.225;             // air density [kg/m^3]
+        liftDir         (0 1 0);           // assume Y is lift
+        dragDir         (1 0 0);           // assume X is drag
+        CofR            (0 0 0);           // center of rotation
+        pitchAxis       (0 0 1);
+        magUInf         400;               // freestream speed [m/s]
+        lRef            0.10642;               // reference length [m]
+        Aref            4.8e-05;              // projected frontal area [m^2]
+        outputControl   timeStep;
+        outputInterval  1;
+    }
+}
+
+// ************************************************************************* //
